@@ -143,3 +143,5 @@ dmypy.json
 # Custom
 .idea/
 localsettings.py
+node_modules/
+.parcel-cache

@@ -1,0 +1,12 @@
+{
+  "name": "awards-review",
+  "version": "1.0.0",
+  "repository": "git@github.com:ocwc/awards-review.git",
+  "author": "Jure Cuhalev <jure@cuhalev.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && yarn run build",
+    "start": "cd frontend && yarn run start"
+  }
+}
