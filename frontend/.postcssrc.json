@@ -1,8 +1,7 @@
 {
   "plugins": [
-    "postcss-import",
     "tailwindcss",
-    "postcss-nested",
-    "autoprefixer"
+    "autoprefixer",
+    "postcss-fail-on-warn"
   ]
 }

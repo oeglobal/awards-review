@@ -6,7 +6,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "cd frontend && yarn run build",
-    "start": "cd frontend && yarn run start"
+    "build": "rm frontend/dist/*; rm -rf frontend/.parcel-cache; cd frontend && yarn run build",
+    "start": "rm frontend/dist/*; rm -rf frontend/.parcel-cache; cd frontend && yarn run start"
+  },
+  "dependencies": {
+    
   }
 }

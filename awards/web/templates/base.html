@@ -6,13 +6,16 @@
     <meta name="robots" content="noindex">
 
     <title>{% block headtitle %}Home{% endblock %} | OE Awards</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
     {% include "bundler-header.html" %}
 </head>
 
-<body>
-{% block content %}
-{% endblock %}
+<body class="bg-gray-100">
+<div class="container">
+    {% block contents %}
+    {% endblock %}
+</div>
 </body>
 
 </html>

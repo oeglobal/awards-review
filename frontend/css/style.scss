@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
-  font-size: 30px;
+@import "_buttons";
+
+body {
+  @apply my-10;
 }

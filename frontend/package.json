@@ -6,18 +6,24 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "parcel serve bundler/*.html --public-url '/static/' --no-hmr",
-    "build": "parcel build bundler/*.html --public-url '/static/'"
+    "start": "PURGE=false parcel serve bundler/*.html --public-url '/static/' --log-level 4",
+    "build": "PURGE=true parcel build bundler/*.html --public-url '/static/'"
   },
   "dependencies": {
+    "@tailwindcss/ui": "^0.3.0",
+    "autoprefixer": "^9.8.4",
     "postcss-import": "^12.0.1",
+    "postcss-modules": "^3.2.0",
     "postcss-nested": "^4.2.2",
     "tailwindcss": "^1.4.6"
   },
   "devDependencies": {
-    "@parcel/transformer-css": "^2.0.0-alpha.3",
-    "@parcel/transformer-postcss": "^2.0.0-alpha.3",
-    "parcel": "^2.0.0-beta.1",
+    "@babel/core": "^7.10.4",
+    "@tailwindcss/custom-forms": "^0.2.1",
+    "parcel": "^1.12.4",
+    "postcss-fail-on-warn": "^0.1.0",
+    "postcss-scss": "^2.1.1",
+    "prettier": "^2.0.5",
     "sass": "^1.26.10"
   }
 }

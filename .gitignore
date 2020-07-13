@@ -145,3 +145,5 @@ dmypy.json
 localsettings.py
 node_modules/
 .parcel-cache
+.DS_Store
+

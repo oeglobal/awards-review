@@ -1,0 +1,7 @@
+To login to the OE Awards Review system, please click on the following link:
+
+https://review.awards.oeglobal.org{{ url }}
+
+It will stay active for 7 days, afterwards you'll have to request a new one.
+
+If you have any questions or problems, please contact Marcela Morales at marcela@oeglobal.org.
