@@ -56,5 +56,5 @@ class LoginKeyCheckView(TemplateView):
 
 
 class SubmissionsView(LoginRequiredMixin, TemplateView):
-    template_name = "web/sumissions.html"
+    template_name = "web/submissions.html"
     pass
