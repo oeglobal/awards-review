@@ -4,9 +4,10 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, ListView
 
-from .models import LoginKey
+from .utils import StaffuserRequiredMixin
+from .models import LoginKey, Entry
 from .forms import LoginForm
 
 
@@ -58,3 +59,11 @@ class LoginKeyCheckView(TemplateView):
 class SubmissionsView(LoginRequiredMixin, TemplateView):
     template_name = "web/submissions.html"
     pass
+
+
+class StaffIndexView(StaffuserRequiredMixin, ListView):
+    template_name = "web-staff/index.html"
+    model = Entry
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by("category")

@@ -8,9 +8,25 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=120)
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+
+
 class Entry(models.Model):
     title = models.TextField()
-    form_id = models.IntegerField(null=True)
+    entry_id = models.IntegerField(null=True)
+
+    category = models.ForeignKey(
+        Category, blank=True, null=True, on_delete=models.CASCADE
+    )
+    subcategory = models.CharField(max_length=125, blank=True)
 
     material = models.TextField(blank=True, null=True)
     video = models.TextField(blank=True, null=True)
@@ -18,8 +34,12 @@ class Entry(models.Model):
 
     data = JSONField(blank=True, null=True)
 
+    class Meta:
+        verbose_name = "Entry"
+        verbose_name_plural = "Entries"
+
     def __str__(self):
-        return "#{} - {}".format(self.form_id, self.title)
+        return "#{} - {}".format(self.entry_id, self.title)
 
 
 CRITERIA_CHOICES = (
