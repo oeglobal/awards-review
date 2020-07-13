@@ -1,7 +1,7 @@
 {% load svg %}
 
 <li class="border-t border-gray-200">
-    <a href="#"
+    <a href="{% url 'entry-detail' obj.pk %}"
        class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
         <div class="px-4 py-4 sm:px-6">
             <div class="flex items-center justify-between">
@@ -21,11 +21,8 @@
                     </div>
                 </div>
                 <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
-                        {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
-                        2 Reviews
-
-                    <span>
-              </span>
+                    {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
+                    2 Reviews
                 </div>
             </div>
         </div>

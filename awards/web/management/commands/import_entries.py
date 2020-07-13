@@ -33,11 +33,21 @@ class Command(BaseCommand):
                     if "." in key:
                         j, k = key.split(".")
                         label = labels[j][key]
+                        if j == "1":
+                            label = "N_" + label
+                        if j == "67" or j == "5":
+                            label = "C_" + label
                     else:
                         label = labels[key]
 
-                    label = label.strip(":")
+                        if key in ["2", "65", "24"]:
+                            label = "N_" + label
 
+                        if key in ["6", "23", "64"]:
+                            label = "C_" + label
+
+                    label = label.strip(":")
+                    print(label)
                     entry[label] = value
 
                     if "Subcategory" in label:
@@ -56,7 +66,7 @@ class Command(BaseCommand):
 
             Entry.objects.create(
                 title=data.get("Title")
-                or "{} {}".format(data.get("First"), data.get("Last")),
+                or "{} {}".format(data.get("C_First"), data.get("C_Last")),
                 entry_id=data["entry_id"],
                 data=data,
                 subcategory=data.get("Subcategory", ""),

@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.views.generic import FormView, TemplateView, ListView
+from django.views.generic import FormView, TemplateView, ListView, DetailView
 
 from .utils import StaffuserRequiredMixin
 from .models import LoginKey, Entry
@@ -67,3 +67,60 @@ class StaffIndexView(StaffuserRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.all().order_by("category")
+
+
+class EntryDetailView(LoginRequiredMixin, DetailView):
+    model = Entry
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        data = self.object.data
+
+        materials = "\n".join(data.get("Additional Support Material (optional)", []))
+
+        groups = [
+            {
+                "name": "Nominator's Information",
+                "fields": {
+                    "Name": "{} {}".format(data.get("N_First"), data.get("N_Last")),
+                    "Email": data.get("N_Email"),
+                    "Institution": data.get("N_Institution"),
+                    "Twitter": data.get("N_Twitter"),
+                },
+            },
+            {
+                "name": "Nominee's Information",
+                "fields": {
+                    "Title": data.get("Title"),
+                    "Link": data.get("Link"),
+                    "License": data.get("License"),
+                    "Description": data.get("Description"),
+                    "Name": "{} {}".format(data.get("C_First"), data.get("C_Last")),
+                    "Email": data.get("C_Email"),
+                    "Institution": data.get("C_Institution"),
+                    "Twitter": data.get("C_Twitter"),
+                    "Location": "{}, {}".format(data.get("City"), data.get("Country")),
+                },
+            },
+            {
+                "name": "Supporting materials",
+                "fields": {
+                    "Proposed Citation": data.get("Proposed Citation"),
+                    "Background": data.get("Background"),
+                    "Youtube video": data.get(
+                        "Link to Youtube video (optional, but encouraged)"
+                    ),
+                    "Letter of Support": data.get(
+                        "Letter of Support (required if self-nominating)"
+                    ),
+                    "Additional Support Material": materials,
+                    "Slideshare presentation": data.get(
+                        "Link to Slideshare presentation (optional)"
+                    ),
+                },
+            },
+        ]
+
+        context["groups"] = groups
+        return context
