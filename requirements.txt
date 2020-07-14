@@ -11,3 +11,4 @@ sqlparse==0.3.1
 urllib3==1.25.9
 git+git://github.com/gandalfar/django-inline-svg.git@master#egg=django-inline-svg
 wheel
+xlrd==1.2.0
