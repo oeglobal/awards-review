@@ -5,8 +5,10 @@ from .views import (
     LoginKeyCheckView,
     IndexView,
     SubmissionsView,
-    StaffIndexView,
+    StaffSubmissionsView,
     EntryDetailView,
+    StaffIndexView,
+    UserListView,
 )
 
 
@@ -19,5 +21,9 @@ urlpatterns = [
     path("submissions/", SubmissionsView.as_view(), name="submissions"),
     path("submissions/<int:pk>/", EntryDetailView.as_view(), name="entry-detail"),
     path("staff/", StaffIndexView.as_view(), name="staff-index"),
+    path(
+        "staff/submissions/", StaffSubmissionsView.as_view(), name="staff-submissions"
+    ),
+    path("staff/users/", UserListView.as_view(), name="staff-user-list"),
     path("", IndexView.as_view(), name="index"),
 ]

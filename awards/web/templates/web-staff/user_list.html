@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block contents %}
+    <h2 class="text-bold text-xl mt-10">Active Reviewers</h2>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+        <ul>
+            {% for user in object_list %}
+                {% include "_includes/user_card-excerpt.html" with obj=user %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

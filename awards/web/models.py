@@ -42,29 +42,33 @@ class Entry(models.Model):
         return "#{} - {}".format(self.entry_id, self.title)
 
 
-CRITERIA_CHOICES = (
-    ("access", "Access",),
-    ("quality", "Quality"),
-    ("visual rep", "Visual representation"),
-    ("engagement", "Engagement"),
-    ("inclussion", "Inclussion"),
-    ("licensing", "Licensing"),
-    ("accessibility", "Accessibility"),
-    ("currency", "Currency"),
-    ("assessment", "Assessment"),
+RATING_CHOICES = (
+    ("draft", "Draft rating"),
+    ("conflict", "Conflict of interest or can't understand the language"),
+    ("done", "Completed rating"),
 )
 
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    criteria = models.CharField(max_length=20, choices=CRITERIA_CHOICES)
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
-    score = models.IntegerField()
 
+    access = models.IntegerField(null=True, verbose_name="Access")
+    quality = models.IntegerField(null=True, verbose_name="Quality")
+    visual = models.IntegerField(null=True, verbose_name="Visual representation")
+    engagement = models.IntegerField(null=True, verbose_name="Engagement")
+    inclussion = models.IntegerField(null=True, verbose_name="Inclussion")
+    licensing = models.IntegerField(null=True, verbose_name="Licensing")
+    accessibility = models.IntegerField(null=True, verbose_name="Accessibility")
+    currency = models.IntegerField(null=True, verbose_name="Currency")
+    assessment = models.IntegerField(null=True, verbose_name="Assessment")
+
+    status = models.CharField(max_length=20, choices=RATING_CHOICES, default="draft")
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "Rating of {} on {}".format(self.score, self.entry.title)
+        return "Rating of #{} by {}".format(self.entry.entry_id, self.user.username)
 
 
 class LoginKey(models.Model):

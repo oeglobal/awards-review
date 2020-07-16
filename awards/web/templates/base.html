@@ -1,3 +1,4 @@
+{% load svg %}
 <html lang="en-US" class="antialiased">
 <head>
     <meta charset="utf-8">
@@ -11,7 +12,26 @@
     {% include "bundler-header.html" %}
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 mb-20">
+<div class="bg-white py-2 mb-10">
+    <nav class="container flex justify-between items-center">
+        <a href="/">{% svg 'logo' class='h-14' %}</a>
+
+        {% if user.is_staff %}
+            <ul class="flex justify-left">
+                <li class="mr-6"><a href="{% url 'staff-index' %}">Overview</a></li>
+                <li class="mr-6"><a href="{% url 'staff-submissions' %}">All Submissions</a></li>
+                <li><a href="{% url 'staff-user-list' %}">Reviewers</a></li>
+            </ul>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <ul class="flex justify-left">
+                <li><a href="{% url 'admin:logout' %}">Logout</a></li>
+            </ul>
+        {% endif %}
+    </nav>
+</div>
 <div class="container">
     {% block contents %}
     {% endblock %}

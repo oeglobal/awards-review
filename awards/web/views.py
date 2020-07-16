@@ -58,11 +58,14 @@ class LoginKeyCheckView(TemplateView):
 
 class SubmissionsView(LoginRequiredMixin, TemplateView):
     template_name = "web/submissions.html"
-    pass
 
 
-class StaffIndexView(StaffuserRequiredMixin, ListView):
+class StaffIndexView(StaffuserRequiredMixin, TemplateView):
     template_name = "web-staff/index.html"
+
+
+class StaffSubmissionsView(StaffuserRequiredMixin, ListView):
+    template_name = "web-staff/submissions.html"
     model = Entry
 
     def get_queryset(self):
@@ -124,3 +127,11 @@ class EntryDetailView(LoginRequiredMixin, DetailView):
 
         context["groups"] = groups
         return context
+
+
+class UserListView(StaffuserRequiredMixin, ListView):
+    model = User
+    template_name = "web-staff/user_list.html"
+
+    def get_queryset(self):
+        return self.model.objects.filter(is_active=True, is_superuser=False)

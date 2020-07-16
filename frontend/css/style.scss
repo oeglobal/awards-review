@@ -5,11 +5,12 @@
 @import "_buttons";
 
 body {
-  @apply my-10;
+  @apply mb-10;
 }
 
-.urlize a {
-  @apply text-blue-600 no-underline;
+.urlize a,
+nav a {
+  @apply text-blue-400 no-underline;
 
   &:hover,
   &:focus {

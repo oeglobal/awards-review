@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 
 {% block contents %}
-    {% regroup object_list by category as entry_list %}
+    <h2 class="text-bold text-xl mt-10">Overview</h2>
 
-    {% for category, entries in entry_list %}
-        <h2 class="text-bold text-xl mt-10">{{ category }}</h2>
 
-        <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
-            <ul>
-                {% for obj in entries %}
-                    {% include "_includes/card-excerpt.html" with obj=obj %}
-                {% endfor %}
-            </ul>
-        </div>
-    {% endfor %}
 {% endblock %}
