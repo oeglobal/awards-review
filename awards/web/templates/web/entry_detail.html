@@ -36,6 +36,10 @@
         {% endfor %}
     </div>
 
+    {% if user.is_staff %}
+        {% include "_includes/entry-stats.html" with entry=object %}
+    {% endif %}
+
     {% if form %}
         {% include "_includes/rating-form.html" with form=form %}
     {% endif %}

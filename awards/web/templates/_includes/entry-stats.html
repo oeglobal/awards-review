@@ -1,0 +1,42 @@
+{% load svg %}
+
+<div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+    <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+        <table class="text-center table-auto table__stats">
+            <thead>
+            <tr class="text-sm">
+                <th>Reviewer</th>
+                <th>Access</th>
+                <th>Quality</th>
+                <th>Visual</th>
+                <th>Engagement</th>
+                <th>Inclusion</th>
+                <th>Licensing</th>
+                <th>Accessibility</th>
+                <th>Currency</th>
+                <th>Asessment</th>
+                <th>Comment</th>
+
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for rating in entry.dones.all %}
+                <tr>
+                    <td>{{ rating.user.first_name }} {{ rating.user.last_name }}</td>
+                    <td>{{ rating.access|default:"N/A" }}</td>
+                    <td>{{ rating.quality|default:"N/A" }}</td>
+                    <td>{{ rating.visual|default:"N/A" }}</td>
+                    <td>{{ rating.engagement|default:"N/A" }}</td>
+                    <td>{{ rating.inclusion|default:"N/A" }}</td>
+                    <td>{{ rating.licensing|default:"N/A" }}</td>
+                    <td>{{ rating.accessibility|default:"N/A" }}</td>
+                    <td>{{ rating.currency|default:"N/A" }}</td>
+                    <td>{{ rating.assessment|default:"N/A" }}</td>
+                    <td class="text-left text-sm">{{ rating.comment }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

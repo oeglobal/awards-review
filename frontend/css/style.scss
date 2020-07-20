@@ -54,3 +54,8 @@ nav a {
 .rating__form [type="checkbox"] {
   @apply inline-block ml-2 w-4 h-4;
 }
+
+.table__stats td,
+.table__stats th {
+  @apply px-4 py-2;
+}
