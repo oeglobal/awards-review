@@ -21,6 +21,12 @@ module.exports = {
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
+      zIndex: {
+        "-10": "-10",
+      },
+      inset: {
+        "-2": "-0.5rem",
+      },
     },
     container: {
       center: true,

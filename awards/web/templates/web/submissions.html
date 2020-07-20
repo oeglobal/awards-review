@@ -1,12 +1,68 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load svg %}
 
 {% block contents %}
-    <h1 class="text-bold text-2xl">Your assigned Submissions</h1>
+    <h1 class="text-bold text-2xl">Submissions waiting for your review</h1>
 
     <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
-        <ul>
+        {% if draft_entries %}
+            <ul>
+                <li class="border-t border-gray-200">
+                    {% for obj in draft_entries %}
+                        {% include "_includes/card-excerpt.html" with obj=obj.entry staff=user.is_staff review=obj %}
+                    {% endfor %}
+                </li>
+            </ul>
+        {% else %}
+            <ul>
+                <li class="border-t border-gray-200">
+                    <div class="px-4 py-4 sm:px-6 flex justify-center items-center">
+                        <p class="flex items-center">All
+                            done {% svg 'laugh' class="flex-shrink-0 ml-1.5 h-6 w-6 text-blue-400 inline-block" %}</p>
+                    </div>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
 
+    <h1 class="text-bold text-2xl mt-10">Completed reviews</h1>
+    <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+            {% if done_entries %}
+            <ul>
+                <li class="border-t border-gray-200">
+                    {% for obj in done_entries %}
+                        {% include "_includes/card-excerpt.html" with obj=obj.entry staff=user.is_staff review=obj %}
+                    {% endfor %}
+                </li>
+            </ul>
+        {% else %}
+            <ul>
+                <li class="border-t border-gray-200">
+                    <div class="px-4 py-4 sm:px-6 flex justify-center items-center">
+                       <p class="flex items-center">None</p>
+                    </div>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
 
-        </ul>
+    <h1 class="text-bold text-2xl mt-10">Skipped reviews</h1>
+    <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+            {% if conflict_entries %}
+            <ul>
+                <li class="border-t border-gray-200">
+                    {% for obj in conflict_entries %}
+                        {% include "_includes/card-excerpt.html" with obj=obj.entry staff=user.is_staff review=obj %}
+                    {% endfor %}
+                </li>
+            </ul>
+        {% else %}
+            <ul>
+                <li class="border-t border-gray-200">
+                    <div class="px-4 py-4 sm:px-6 flex justify-center items-center">
+                       <p class="flex items-center">None</p>
+                    </div>
+                </li>
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}

@@ -23,6 +23,10 @@
                 <li class="mr-6"><a href="{% url 'staff-submissions' %}">All Submissions</a></li>
                 <li><a href="{% url 'staff-user-list' %}">Reviewers</a></li>
             </ul>
+        {% elif user.is_authenticated %}
+            <ul class="flex justify-left">
+                <li class="mr-6"><a href="{% url 'submissions' %}">Submissions</a></li>
+            </ul>
         {% endif %}
 
         {% if user.is_authenticated %}
@@ -32,6 +36,18 @@
         {% endif %}
     </nav>
 </div>
+{% if messages %}
+    <div class="bg-green-300 py-6 -mt-10 mb-6 font-semibold">
+        <div class="container">
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+
 <div class="container">
     {% block contents %}
     {% endblock %}

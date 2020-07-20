@@ -43,29 +43,88 @@ class Entry(models.Model):
 
 
 RATING_CHOICES = (
+    ("empty", "Empty ballot"),
     ("draft", "Draft rating"),
     ("conflict", "Conflict of interest or can't understand the language"),
     ("done", "Completed rating"),
 )
 
 
+class DraftsRatingManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status__in=["empty", "draft"])
+
+
+class DonesRatingManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status__in=["done"])
+
+
+class ConflictsRatingManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status__in=["conflict"])
+
+
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
 
-    access = models.IntegerField(null=True, verbose_name="Access")
-    quality = models.IntegerField(null=True, verbose_name="Quality")
-    visual = models.IntegerField(null=True, verbose_name="Visual representation")
-    engagement = models.IntegerField(null=True, verbose_name="Engagement")
-    inclussion = models.IntegerField(null=True, verbose_name="Inclussion")
-    licensing = models.IntegerField(null=True, verbose_name="Licensing")
-    accessibility = models.IntegerField(null=True, verbose_name="Accessibility")
-    currency = models.IntegerField(null=True, verbose_name="Currency")
-    assessment = models.IntegerField(null=True, verbose_name="Assessment")
+    access = models.IntegerField(
+        null=True,
+        verbose_name="Access",
+        help_text="Resources are easily accesible and readily available to anyone.",
+    )
+    quality = models.IntegerField(
+        null=True,
+        verbose_name="Quality",
+        help_text="Exemplary quality in the presentation of content (in breadth, depth, creativity)",
+    )
+    visual = models.IntegerField(
+        null=True,
+        verbose_name="Visual representation",
+        help_text="Uses multiple means of visual representation through accessible embedded multimedia content.",
+    )
+    engagement = models.IntegerField(
+        null=True,
+        verbose_name="Engagement",
+        help_text="Provides multiple means of engagement through social learning connections, networks and/or communities.",
+    )
+    inclusion = models.IntegerField(
+        null=True,
+        verbose_name="Inclusion",
+        help_text="Promotes inclusiveness and diversity through the use of variety of languages.",
+    )
+    licensing = models.IntegerField(
+        null=True,
+        verbose_name="Licensing",
+        help_text="Copyright and Fair Use guidelines are followed with proper use of citations.  An open license is clearly stated.",
+    )
+    accessibility = models.IntegerField(
+        null=True,
+        verbose_name="Accessibility",
+        help_text="The resource supports learners with diverse needs.",
+    )
+    currency = models.IntegerField(
+        null=True,
+        verbose_name="Currency",
+        help_text="Information is current and updated.  Date of materiales is clearly indicated.",
+    )
+    assessment = models.IntegerField(
+        null=True,
+        verbose_name="Assessment",
+        help_text="A form of certification or accreditation is available.",
+    )
 
-    status = models.CharField(max_length=20, choices=RATING_CHOICES, default="draft")
+    comment = models.TextField(blank=True, verbose_name="Comment (optional)")
+
+    status = models.CharField(max_length=20, choices=RATING_CHOICES, default="empty")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    drafts = DraftsRatingManager()
+    dones = DonesRatingManager()
+    conflicts = ConflictsRatingManager()
 
     def __str__(self):
         return "Rating of #{} by {}".format(self.entry.entry_id, self.user.username)

@@ -1,14 +1,18 @@
 import datetime
 
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
 from django.views.generic import FormView, TemplateView, ListView, DetailView
+from django.views.generic.base import View
+from django.views.generic.detail import SingleObjectMixin
 
 from .utils import StaffuserRequiredMixin
-from .models import LoginKey, Entry
-from .forms import LoginForm
+from .models import LoginKey, Entry, Rating
+from .forms import LoginForm, RatingForm
 
 
 class IndexView(FormView):
@@ -28,9 +32,9 @@ class IndexView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_staff:
-            return redirect("/staff/")
+            return redirect(reverse_lazy("staff-index"))
         if request.user.is_authenticated:
-            return redirect("/submissions/")
+            return redirect(reverse_lazy("submissions"))
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -51,13 +55,26 @@ class LoginKeyCheckView(TemplateView):
             login_key.user.backend = "django.contrib.auth.backends.ModelBackend"
             login(self.request, login_key.user)
 
-            return redirect(request.GET.get("next", "/submissions/"))
+            return redirect(request.GET.get("next", reverse_lazy("submissions")))
 
         return super(LoginKeyCheckView, self).dispatch(request, *args, **kwargs)
 
 
 class SubmissionsView(LoginRequiredMixin, TemplateView):
     template_name = "web/submissions.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context.update(
+            {
+                "draft_entries": Rating.drafts.filter(user=user),
+                "done_entries": Rating.dones.filter(user=user),
+                "conflict_entries": Rating.conflicts.filter(user=user),
+            }
+        )
+
+        return context
 
 
 class StaffIndexView(StaffuserRequiredMixin, TemplateView):
@@ -72,16 +89,24 @@ class StaffSubmissionsView(StaffuserRequiredMixin, ListView):
         return self.model.objects.all().order_by("category")
 
 
-class EntryDetailView(LoginRequiredMixin, DetailView):
+class EntryView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        view = EntryDetailView.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = EntryFormView.as_view()
+        return view(request, *args, **kwargs)
+
+
+class EntryDetailView(DetailView):
     model = Entry
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         data = self.object.data
 
         materials = "\n".join(data.get("Additional Support Material (optional)", []))
-
         groups = [
             {
                 "name": "Nominator's Information",
@@ -126,7 +151,80 @@ class EntryDetailView(LoginRequiredMixin, DetailView):
         ]
 
         context["groups"] = groups
+
+        try:
+            rating_instance = Rating.objects.get(
+                entry=self.object, user=self.request.user
+            )
+            context["form"] = RatingForm(instance=rating_instance)
+        except Rating.DoesNotExist:
+            pass
+
         return context
+
+
+class EntryFormView(SingleObjectMixin, FormView):
+    template_name = "web/entry_detail.html"
+    form_class = RatingForm
+    model = Entry
+    object = None
+    rating_instance = None
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        self.object = self.get_object()
+        form = self.get_form()
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        rating = form.save()
+
+        if form.cleaned_data.get("is_conflict"):
+            for field in [
+                "access",
+                "quality",
+                "visual",
+                "engagement",
+                "inclusion",
+                "licensing",
+                "accessibility",
+                "currency",
+                "assessment",
+            ]:
+                setattr(rating, field, None)
+
+            rating.status = "conflict"
+        elif form.cleaned_data.get("is_draft"):
+            rating.status = "draft"
+        else:
+            rating.status = "done"
+
+        rating.save()
+
+        return super().form_valid(form)
+
+    def get_form(self, form_class=None):
+        self.rating_instance = Rating.objects.get(
+            entry=self.object, user=self.request.user
+        )
+        return self.form_class(instance=self.rating_instance, **self.get_form_kwargs())
+
+    def get_success_url(self):
+        if self.rating_instance.status == "draft":
+            messages.add_message(
+                self.request, messages.INFO, "Your draft review has been saved."
+            )
+            return reverse("entry-detail", kwargs={"pk": self.object.pk})
+
+        messages.add_message(self.request, messages.INFO, "Your review has been saved.")
+        return reverse_lazy("submissions")
 
 
 class UserListView(StaffuserRequiredMixin, ListView):

@@ -20,10 +20,24 @@
                         {{ obj.data.Country }}
                     </div>
                 </div>
-                <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
-                    {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
-                    2 Reviews
-                </div>
+                {% if staff %}
+                    <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
+                        {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
+                        2 Reviews
+                    </div>
+                {% else %}
+                    {% if review.status == 'draft' %}
+                        <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
+                            {% svg 'empty' class="flex-shrink-0 mr-1.5 h-5 w-5 text-yellow-400" %}
+                            Needs review
+                        </div>
+                    {% elif review.status == 'done' %}
+                        <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
+                        {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
+                        Reviewed
+                        </div>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </a>

@@ -65,6 +65,7 @@ class Command(BaseCommand):
             )
 
             Entry.objects.create(
+                id=data["entry_id"],
                 title=data.get("Title")
                 or "{} {}".format(data.get("C_First"), data.get("C_Last")),
                 entry_id=data["entry_id"],

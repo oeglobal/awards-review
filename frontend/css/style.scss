@@ -17,3 +17,40 @@ nav a {
     @apply underline;
   }
 }
+
+.rating__form p {
+  @apply my-8;
+}
+
+.rating__form p label {
+  @apply font-bold block mb-2;
+}
+
+.rating__form .helptext {
+  @apply block mb-4;
+}
+
+.rating__button {
+  @apply text-lg w-15 h-15 border;
+
+  &:last-child {
+    @apply ml-4;
+  }
+
+  &.active {
+    @apply bg-gray-700 text-white font-bold;
+  }
+}
+
+.rating__form [name="comment"] {
+  @apply border p-2;
+}
+
+.rating__form p label[for="id_is_draft"],
+.rating__form p label[for="id_is_conflict"] {
+  @apply inline-block;
+}
+
+.rating__form [type="checkbox"] {
+  @apply inline-block ml-2 w-4 h-4;
+}

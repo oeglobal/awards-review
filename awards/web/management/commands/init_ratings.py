@@ -61,7 +61,9 @@ class Command(BaseCommand):
                     if random_user in assigned_users:
                         continue
 
-                    rating = Rating.objects.create(user=random_user, entry=entry)
+                    rating = Rating.objects.create(
+                        user=random_user, entry=entry, status="empty"
+                    )
                     self.stdout.write("{}".format(rating))
                     assigned_ballots += 1
                     assigned_users.append(random_user)
