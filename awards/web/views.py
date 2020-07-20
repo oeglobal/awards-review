@@ -233,3 +233,20 @@ class UserListView(StaffuserRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.filter(is_active=True, is_superuser=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        data = []
+        for user in self.get_queryset():
+            data.append(
+                {
+                    "user": user,
+                    "dones": user.rating_set(manager="dones").count(),
+                    "conflicts": user.rating_set(manager="conflicts").count(),
+                    "drafts": user.rating_set(manager="drafts").count(),
+                }
+            )
+
+        context["data"] = data
+        return context

@@ -15,4 +15,5 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ["__str__", "updated"]
+    list_display = ["__str__", "updated", "status", "user"]
+    list_filter = ["status", "user"]

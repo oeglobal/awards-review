@@ -20,21 +20,45 @@
                         {{ obj.data.Country }}
                     </div>
                 </div>
-                {% if staff %}
+                {% if user.is_staff %}
                     <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
-                        {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
-                        2 Reviews
+                        {% if obj.dones.count >= 2 %}
+                            {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400 ml-4" %}
+                            {{ obj.dones.count }} Reviews
+                        {% else %}
+                            {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-200 ml-4" %}
+                            {{ obj.dones.count }} Review{{ obj.dones.count|pluralize }}
+                        {% endif %}
+
+                        {% if obj.conflicts.count > 0 %}
+                            {% svg 'exclamation' class="flex-shrink-0 mr-1.5 h-5 w-5 text-red-400 ml-4" %}
+                            {{ obj.conflicts.count }} Skipped
+                        {% else %}
+                            {% svg 'exclamation' class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-200 ml-4" %}
+                            {{ obj.conflicts.count }} Skipped
+                        {% endif %}
+
+                        {% if obj.drafts.count > 0 %}
+                            {% svg 'empty' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-200 ml-4" %}
+                            {{ obj.drafts.count }} Need review
+                        {% endif %}
+
                     </div>
                 {% else %}
-                    {% if review.status == 'draft' %}
+                    {% if review.status == 'draft' or review.status == 'empty' %}
                         <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
                             {% svg 'empty' class="flex-shrink-0 mr-1.5 h-5 w-5 text-yellow-400" %}
                             Needs review
                         </div>
                     {% elif review.status == 'done' %}
                         <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
-                        {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
-                        Reviewed
+                            {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" %}
+                            Reviewed
+                        </div>
+                    {% elif review.status == 'conflict' %}
+                        <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
+                            {% svg 'times' class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" %}
+                            Skipped
                         </div>
                     {% endif %}
                 {% endif %}

@@ -6,10 +6,10 @@
         <div class="px-4 py-4 sm:px-6">
             <div class="flex items-center justify-between">
                 <div class="text-base leading-loose font-medium text-blue-400 truncate">
-                    {% if user.first_name %}
-                        {{ user.first_name }} {{ user.last_name }}
+                    {% if obj.user.first_name %}
+                        {{ obj.user.first_name }} {{ obj.user.last_name }}
                     {% else %}
-                        {{ user.username }}
+                        {{ obj.user.username }}
                     {% endif %}
                 </div>
             </div>
@@ -17,30 +17,37 @@
                 <div class="sm:flex">
                     <div class="mr-6 flex items-center text-sm leading-5 text-gray-500">
                         {% svg 'at-sign' class="flex-shrink-0 mr-1.5 h-5 w-5 text-blue-400" %}
-                        <a class="hover:text-blue-400 hover:underline" href="mailto:{{ user.email }}">{{ user.email }}</a>
+                        <a class="hover:text-blue-400 hover:underline"
+                           href="mailto:{{ obj.user.email }}">{{ obj.user.email }}</a>
                     </div>
                     <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
                         {% svg 'calendar' class="flex-shrink-0 mr-1.5 h-5 w-5 text-blue-400" %}
-                        {% if not user.last_login %}
+                        {% if not obj.user.last_login %}
                             Never logged-in
                         {% else %}
-                            {{ user.last_login|naturaltime }}
+                            {{ obj.user.last_login|naturaltime }}
                         {% endif %}
                     </div>
                 </div>
                 <div class="mt-2 flex items-center justify-center text-sm leading-5 text-gray-500 sm:mt-0">
-                    <span class="mr-4">
+                    {% if obj.dones %}
+                        <span class="mr-4">
                         {% svg 'check' class="flex-shrink-0 mr-1 h-5 w-5 text-green-400 inline-block" %}
-                        2 Completed
+                        {{ obj.dones }} Completed
                     </span>
-                    <span class="mr-4">
+                    {% endif %}
+                    {% if obj.drafts %}
+                        <span class="mr-4">
                         {% svg 'empty' class="flex-shrink-0 mr-1 h-5 w-5 text-yellow-400 inline-block" %}
-                        4 Waiting
+                        {{ obj.drafts }} Waiting
                     </span>
+                    {% endif %}
+                    {% if obj.conflicts %}
                     <span>
                         {% svg 'exclamation' class="flex-shrink-0 mr-1 h-5 w-5 text-red-600 inline-block" %}
-                        5 Skipped
+                        {{ obj.conflicts }} Skipped
                     </span>
+                    {% endif %}
                 </div>
             </div>
         </div>

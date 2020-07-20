@@ -5,8 +5,8 @@
 
     <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
         <ul>
-            {% for user in object_list %}
-                {% include "_includes/user_card-excerpt.html" with obj=user %}
+            {% for obj in data %}
+                {% include "_includes/user_card-excerpt.html" with obj=obj %}
             {% endfor %}
         </ul>
     </div>

@@ -41,6 +41,15 @@ class Entry(models.Model):
     def __str__(self):
         return "#{} - {}".format(self.entry_id, self.title)
 
+    def conflicts(self):
+        return self.rating_set(manager="conflicts")
+
+    def dones(self):
+        return self.rating_set(manager="dones")
+
+    def drafts(self):
+        return self.rating_set(manager="drafts")
+
 
 RATING_CHOICES = (
     ("empty", "Empty ballot"),
