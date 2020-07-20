@@ -35,8 +35,30 @@
                     <td>{{ rating.assessment|default:"N/A" }}</td>
                     <td class="text-left text-sm">{{ rating.comment }}</td>
                 </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10">None yet</td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
+
+        {% if entry.drafts.count %}
+            <h2 class="text-bold text-xl mt-10">Waiting for review from:</h2>
+            <ul class="mt-4">
+                {% for rating in entry.drafts.all %}
+                    <li class="inline-block">{{ rating.user.first_name }} {{ rating.user.last_name }}{% if not forloop.last %}, {% endif %}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if entry.conflicts.count %}
+            <h2 class="text-bold text-xl mt-10">Could not review:</h2>
+            <ul class="mt-4">
+                {% for rating in entry.conflicts.all %}
+                    <li class="inline-block">{{ rating.user.first_name }} {{ rating.user.last_name }}{% if not forloop.last %}, {% endif %}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 </div>
