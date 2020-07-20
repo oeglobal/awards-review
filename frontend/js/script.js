@@ -1,6 +1,23 @@
 import $ from "jquery";
 
 const ratingForm = () => {
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie("csrftoken");
+
   $('input[type="number"]').each(function () {
     let $this = $(this);
     let $html = $(`<div class="rating__input" />`);
@@ -43,6 +60,36 @@ const ratingForm = () => {
       } else {
         $(this).prop("required", true);
       }
+    });
+  });
+
+  $(".js-reviewers li").each(function () {
+    $(this).on("click", function () {
+      let user = $(this).data("user");
+      let entry = $(this).data("entry");
+      let ignore = $(this).data("ignore");
+
+      if (!ignore) {
+        function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+          return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
+        }
+
+        $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+          },
+        });
+
+        $.post(`/submissions/${entry}/${user}/`).then(function () {
+          window.location.href = `/submissions/${entry}/#reviewers`;
+          window.location.reload();
+        });
+      }
+
+      return false;
     });
   });
 };

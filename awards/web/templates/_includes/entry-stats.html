@@ -47,7 +47,8 @@
             <h2 class="text-bold text-xl mt-10">Waiting for review from:</h2>
             <ul class="mt-4">
                 {% for rating in entry.drafts.all %}
-                    <li class="inline-block">{{ rating.user.first_name }} {{ rating.user.last_name }}{% if not forloop.last %}, {% endif %}</li>
+                    <li class="inline-block">{{ rating.user.first_name }}
+                        {{ rating.user.last_name }}{% if not forloop.last %}, {% endif %}</li>
                 {% endfor %}
             </ul>
         {% endif %}
@@ -56,9 +57,27 @@
             <h2 class="text-bold text-xl mt-10">Could not review:</h2>
             <ul class="mt-4">
                 {% for rating in entry.conflicts.all %}
-                    <li class="inline-block">{{ rating.user.first_name }} {{ rating.user.last_name }}{% if not forloop.last %}, {% endif %}</li>
+                    <li class="inline-block">{{ rating.user.first_name }}
+                        {{ rating.user.last_name }}{% if not forloop.last %}, {% endif %}</li>
                 {% endfor %}
             </ul>
         {% endif %}
+
+        <h2 class="text-bold text-xl mt-10">Assign additional reviewers:</h2>
+        <ul class="mt-4 js-reviewers" id="reviewers">
+            {% for reviewer in reviewers %}
+                <li class="inline-block mr-4 w-60
+                           {% if reviewer.assigned %}font-bold
+                           {% elif reviewer.readonly %}text-sm
+                           {% else %}underline cursor-pointer hover:text-blue-400{% endif %}
+                          "
+                    data-user="{{ reviewer.user.id }}"
+                    data-entry="{{ entry.id }}"
+                    {% if reviewer.readonly %}data-ignore=true{% endif %}
+                >
+                    {{ reviewer.user.first_name }} {{ reviewer.user.last_name }}
+                    ({{ reviewer.user.rating_set.all.count }})</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>

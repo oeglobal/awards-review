@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import FormView, TemplateView, ListView, DetailView
@@ -152,6 +153,22 @@ class EntryDetailView(DetailView):
 
         context["groups"] = groups
 
+        if self.request.user.is_staff:
+            reviewers = []
+            for user in User.objects.filter(is_staff=False):
+                reviewers.append(
+                    {
+                        "user": user,
+                        "readonly": self.object.rating_set(manager="dones")
+                        .filter(user=user)
+                        .exists(),
+                        "assigned": self.object.rating_set.filter(
+                            user=user, status__in=["empty", "draft", "conflict"]
+                        ).exists(),
+                    }
+                )
+            context["reviewers"] = reviewers
+
         try:
             rating_instance = Rating.objects.get(
                 entry=self.object, user=self.request.user
@@ -250,3 +267,18 @@ class UserListView(StaffuserRequiredMixin, ListView):
 
         context["data"] = data
         return context
+
+
+class EntryAssignUser(StaffuserRequiredMixin, View):
+    def post(self, request, pk, user_id, *args, **kwargs):
+        user = User.objects.get(pk=user_id)
+        entry = Entry.objects.get(pk=pk)
+
+        # if user doesn't have a rating ballot yet, create it
+        if not Rating.objects.filter(user=user, entry=entry).exists():
+            Rating.objects.create(user=user, entry=entry)
+        else:
+            if Rating.conflicts.filter(user=user, entry=entry):
+                Rating.conflicts.filter(user=user, entry=entry).delete()
+
+        return HttpResponse("ok")

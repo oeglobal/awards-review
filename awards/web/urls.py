@@ -9,6 +9,7 @@ from .views import (
     EntryView,
     StaffIndexView,
     UserListView,
+    EntryAssignUser,
 )
 
 
@@ -19,6 +20,11 @@ def trigger_error(request):
 urlpatterns = [
     path("login/<str:key>/", LoginKeyCheckView.as_view(), name="login-key-check"),
     path("submissions/", SubmissionsView.as_view(), name="submissions"),
+    path(
+        "submissions/<int:pk>/<int:user_id>/",
+        EntryAssignUser.as_view(),
+        name="entry-assign-user",
+    ),
     path("submissions/<int:pk>/", EntryView.as_view(), name="entry-detail"),
     path("staff/", StaffIndexView.as_view(), name="staff-index"),
     path(
