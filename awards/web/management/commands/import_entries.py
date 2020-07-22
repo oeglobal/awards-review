@@ -47,7 +47,6 @@ class Command(BaseCommand):
                             label = "C_" + label
 
                     label = label.strip(":")
-                    print(label)
                     entry[label] = value
 
                     if "Subcategory" in label:

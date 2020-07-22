@@ -153,22 +153,6 @@ class EntryDetailView(DetailView):
 
         context["groups"] = groups
 
-        if self.request.user.is_staff:
-            reviewers = []
-            for user in User.objects.filter(is_staff=False):
-                reviewers.append(
-                    {
-                        "user": user,
-                        "readonly": self.object.rating_set(manager="dones")
-                        .filter(user=user)
-                        .exists(),
-                        "assigned": self.object.rating_set.filter(
-                            user=user, status__in=["empty", "draft", "conflict"]
-                        ).exists(),
-                    }
-                )
-            context["reviewers"] = reviewers
-
         try:
             rating_instance = Rating.objects.get(
                 entry=self.object, user=self.request.user
@@ -281,4 +265,31 @@ class EntryAssignUser(StaffuserRequiredMixin, View):
             if Rating.conflicts.filter(user=user, entry=entry):
                 Rating.conflicts.filter(user=user, entry=entry).delete()
 
+            if Rating.drafts.filter(user=user, entry=entry):
+                Rating.drafts.filter(user=user, entry=entry).delete()
+
         return HttpResponse("ok")
+
+
+class AssignmentView(StaffuserRequiredMixin, ListView):
+    model = Entry
+    template_name = "web-staff/assignment.html"
+    cat = None
+
+    def get_queryset(self):
+        self.cat = self.request.GET.get("cat")
+        if self.cat:
+            return self.model.objects.filter(category=self.cat).order_by(
+                "category", "entry_id"
+            )
+        else:
+            return self.model.objects.all().order_by("category", "entry_id")
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context["categories"] = (
+            self.model.objects.all().values("category__name", "category__id").distinct()
+        )
+        context["filtering"] = bool(self.cat)
+
+        return context

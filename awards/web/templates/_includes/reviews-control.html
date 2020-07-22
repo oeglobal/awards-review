@@ -1,0 +1,15 @@
+<ul class="mt-4 js-reviewers" id="reviewers">
+    {% for reviewer in reviewers %}
+        <li class="inline-block mr-4 w-80
+                           {% if reviewer.assigned %}font-bold cursor-pointer hover:text-blue-400
+                           {% elif reviewer.readonly %}text-sm
+                           {% else %}underline cursor-pointer hover:text-blue-400{% endif %}
+                          "
+            data-user="{{ reviewer.user.id }}"
+            data-entry="{{ entry.id }}"
+        >
+            {{ reviewer.user.first_name }} {{ reviewer.user.last_name }}
+            ({{ reviewer.user.rating_set.all.count }})
+        </li>
+    {% endfor %}
+</ul>

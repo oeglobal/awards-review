@@ -50,6 +50,19 @@ class Entry(models.Model):
     def drafts(self):
         return self.rating_set(manager="drafts")
 
+    def get_reviewers(self):
+        reviewers = []
+        for user in User.objects.filter(is_staff=False):
+            reviewers.append(
+                {
+                    "user": user,
+                    "assigned": self.rating_set.filter(
+                        user=user, status__in=["empty", "draft", "conflict"]
+                    ).exists(),
+                }
+            )
+        return reviewers
+
 
 RATING_CHOICES = (
     ("empty", "Empty ballot"),

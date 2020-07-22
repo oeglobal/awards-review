@@ -10,6 +10,7 @@ from .views import (
     StaffIndexView,
     UserListView,
     EntryAssignUser,
+    AssignmentView,
 )
 
 
@@ -31,5 +32,6 @@ urlpatterns = [
         "staff/submissions/", StaffSubmissionsView.as_view(), name="staff-submissions"
     ),
     path("staff/users/", UserListView.as_view(), name="staff-user-list"),
+    path("staff/assignment/", AssignmentView.as_view(), name="staff-assignment"),
     path("", IndexView.as_view(), name="index"),
 ]

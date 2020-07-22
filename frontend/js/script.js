@@ -84,7 +84,6 @@ const ratingForm = () => {
         });
 
         $.post(`/submissions/${entry}/${user}/`).then(function () {
-          window.location.href = `/submissions/${entry}/#reviewers`;
           window.location.reload();
         });
       }

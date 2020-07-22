@@ -8,6 +8,9 @@
                 <div class="text-base leading-loose font-medium text-blue-400 truncate">
                     {{ obj.title }}
                 </div>
+                <div class="text-gray-500">
+                    #{{ obj.entry_id }}
+                </div>
             </div>
             <div class="mt-2 sm:flex sm:justify-between">
                 <div class="sm:flex">
@@ -20,21 +23,18 @@
                         {{ obj.data.Country }}
                     </div>
                 </div>
-                {% if user.is_staff %}
+                {% if not hide_status and user.is_staff %}
                     <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
                         {% if obj.dones.count >= 2 %}
                             {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400 ml-4" %}
                             {{ obj.dones.count }} Reviews
-                        {% else %}
+                        {% elif obj.dones.count > 1 %}
                             {% svg 'check' class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-200 ml-4" %}
                             {{ obj.dones.count }} Review{{ obj.dones.count|pluralize }}
                         {% endif %}
 
                         {% if obj.conflicts.count > 0 %}
                             {% svg 'exclamation' class="flex-shrink-0 mr-1.5 h-5 w-5 text-red-400 ml-4" %}
-                            {{ obj.conflicts.count }} Skipped
-                        {% else %}
-                            {% svg 'exclamation' class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-200 ml-4" %}
                             {{ obj.conflicts.count }} Skipped
                         {% endif %}
 

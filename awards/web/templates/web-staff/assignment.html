@@ -1,0 +1,47 @@
+{% extends "base.html" %}{% load cache %}
+
+
+{% block contents %}
+    <h2 class="text-bold text-xl mt-10">Filter by category</h2>
+    <ul>
+        {% for cat in categories %}
+            <li class="inline-block hover:underline"><a
+                    href="{% url 'staff-assignment' %}?cat={{ cat.category__id }}">{{ cat.category__name }}</a>
+                {% if not forloop.last %}, {% endif %}</li>
+        {% endfor %}
+    </ul>
+
+    {% if filtering %}
+        {% with object_list|first as entry %}
+            <h2 class="text-bold text-xl mt-10">{{ entry.category }}</h2>
+        {% endwith %}
+
+        {% for entry in object_list %}
+            <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+                <ul>
+                    {% include "_includes/card-excerpt.html" with obj=entry %}
+                </ul>
+                <div class="px-4 py-4 sm:px-6">
+                    {% include "_includes/reviews-control.html" with reviewers=entry.get_reviewers entry=entry %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        {% regroup object_list by category as entry_list %}
+
+        {% for category, entries in entry_list %}
+            <h2 class="text-bold text-xl mt-10">{{ category }}</h2>
+
+            {% for entry in entries %}
+                <div class="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+                    <ul>
+                        {% include "_includes/card-excerpt.html" with obj=entry hide_status=True %}
+                    </ul>
+                    <div class="px-4 py-4 sm:px-6">
+                        {% include "_includes/reviews-control.html" with reviewers=entry.get_reviewers entry=entry %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
