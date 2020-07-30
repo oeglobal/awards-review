@@ -117,6 +117,16 @@ class EntryDetailView(DetailView):
             )
         materials = mark_safe("\n".join(materials))
 
+        letters = []
+        print(data.get("Letter of Support (required if self-nominating)"))
+        for letter in data.get("Letter of Support (required if self-nominating)"):
+            letters.append(
+                '<a href="{}" target="_blank">{}</a><br /><br />'.format(
+                    letter, letter.split("/")[-1]
+                )
+            )
+        letters = mark_safe("\n".join(letters))
+
         nominee_fields = {}
         if self.request.user.is_staff:
             nominee_fields = {
@@ -148,10 +158,11 @@ class EntryDetailView(DetailView):
             data.get("Proposed Citation")
             or data.get("Background")
             or data.get("Link to Youtube video (optional, but encouraged)")
-            or data.get("Letter of Support (required if self-nominating)")
+            or letters
             or materials
             or data.get("Link to Slideshare presentation (optional)")
         ):
+            print(letters)
             groups.append(
                 {
                     "name": "Supporting materials",
@@ -161,9 +172,7 @@ class EntryDetailView(DetailView):
                         "Youtube video": data.get(
                             "Link to Youtube video (optional, but encouraged)"
                         ),
-                        "Letter of Support": data.get(
-                            "Letter of Support (required if self-nominating)"
-                        ),
+                        "Letter of Support": letters,
                         "Additional Support Material": materials,
                         "Slideshare presentation": data.get(
                             "Link to Slideshare presentation (optional)"
