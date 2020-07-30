@@ -134,6 +134,8 @@ class EntryDetailView(DetailView):
                 "Twitter": data.get("C_Twitter"),
             }
 
+        from pprint import pprint
+
         groups = [
             {
                 "name": "Nominee's Information",
@@ -142,7 +144,8 @@ class EntryDetailView(DetailView):
                         "Title": data.get("Title"),
                         "Link": data.get("Link"),
                         "License": data.get("License"),
-                        "Description": data.get("Description"),
+                        "Description": data.get("Description")
+                        or data.get("Description (optional)"),
                         "Institution": data.get("C_Institution"),
                         "Location": "{}, {}".format(
                             data.get("City"), data.get("Country")
@@ -161,7 +164,6 @@ class EntryDetailView(DetailView):
             or materials
             or data.get("Link to Slideshare presentation (optional)")
         ):
-            print(letters)
             groups.append(
                 {
                     "name": "Supporting materials",
