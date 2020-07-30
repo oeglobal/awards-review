@@ -63,6 +63,9 @@ class Entry(models.Model):
             )
         return reviewers
 
+    def get_entry_link(self):
+        return self.data.get("Link")
+
 
 RATING_CHOICES = (
     ("empty", "Empty ballot"),

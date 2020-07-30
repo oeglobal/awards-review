@@ -5,7 +5,8 @@ from .models import Entry, Category, Rating
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
-    list_filter = ("category",)
+    list_display = ["__str__", "get_entry_link"]
+    list_filter = ["category"]
 
 
 @admin.register(Category)
