@@ -118,8 +118,7 @@ class EntryDetailView(DetailView):
         materials = mark_safe("\n".join(materials))
 
         letters = []
-        print(data.get("Letter of Support (required if self-nominating)"))
-        for letter in data.get("Letter of Support (required if self-nominating)"):
+        for letter in data.get("Letter of Support (required if self-nominating)", []):
             letters.append(
                 '<a href="{}" target="_blank">{}</a><br /><br />'.format(
                     letter, letter.split("/")[-1]
