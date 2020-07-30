@@ -28,10 +28,10 @@
                                     {{ key }}
                                 </dt>
                                 <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 urlize">
-                                    {% if key == 'Additional Support Material' or 'Letter of Support' %}
+                                    {% if key == 'Additional Support Material' or key == 'Letter of Support' %}
                                         {{ value|safe }}
                                     {% else %}
-                                        {{ value|linebreaksbr|urlize }}
+                                        {{ value|urlize|linebreaksbr|safe }}
                                     {% endif %}
                                 </dd>
                             </div>
