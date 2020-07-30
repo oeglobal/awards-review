@@ -31,7 +31,7 @@
                                     {% if key == 'Additional Support Material' %}
                                         {{ value|safe }}
                                     {% else %}
-                                        {{ value|urlize }}
+                                        {{ value|linebreaksbr|urlize }}
                                     {% endif %}
                                 </dd>
                             </div>
