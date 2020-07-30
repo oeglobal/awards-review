@@ -7,13 +7,14 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
+from django.utils.safestring import mark_safe
 from django.views.generic import FormView, TemplateView, ListView, DetailView
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin
 
 from .utils import StaffuserRequiredMixin
 from .models import LoginKey, Entry, Rating
-from .forms import LoginForm, RatingForm
+from .forms import LoginForm, RatingForm, IndividualRatingForm
 
 
 class IndexView(FormView):
@@ -107,49 +108,96 @@ class EntryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         data = self.object.data
 
-        materials = "\n".join(data.get("Additional Support Material (optional)", []))
+        materials = []
+        for material in data.get("Additional Support Material (optional)", []):
+            materials.append(
+                '<a href="{}" target="_blank">{}</a><br /><br />'.format(
+                    material, material.split("/")[-1]
+                )
+            )
+        materials = mark_safe("\n".join(materials))
+
+        nominee_fields = {}
+        if self.request.user.is_staff:
+            nominee_fields = {
+                "Name": "{} {}".format(data.get("C_First"), data.get("C_Last")),
+                "Email": data.get("C_Email"),
+                "Twitter": data.get("C_Twitter"),
+            }
+
         groups = [
             {
-                "name": "Nominator's Information",
-                "fields": {
-                    "Name": "{} {}".format(data.get("N_First"), data.get("N_Last")),
-                    "Email": data.get("N_Email"),
-                    "Institution": data.get("N_Institution"),
-                    "Twitter": data.get("N_Twitter"),
-                },
-            },
-            {
                 "name": "Nominee's Information",
-                "fields": {
-                    "Title": data.get("Title"),
-                    "Link": data.get("Link"),
-                    "License": data.get("License"),
-                    "Description": data.get("Description"),
-                    "Name": "{} {}".format(data.get("C_First"), data.get("C_Last")),
-                    "Email": data.get("C_Email"),
-                    "Institution": data.get("C_Institution"),
-                    "Twitter": data.get("C_Twitter"),
-                    "Location": "{}, {}".format(data.get("City"), data.get("Country")),
-                },
-            },
-            {
-                "name": "Supporting materials",
-                "fields": {
-                    "Proposed Citation": data.get("Proposed Citation"),
-                    "Background": data.get("Background"),
-                    "Youtube video": data.get(
-                        "Link to Youtube video (optional, but encouraged)"
-                    ),
-                    "Letter of Support": data.get(
-                        "Letter of Support (required if self-nominating)"
-                    ),
-                    "Additional Support Material": materials,
-                    "Slideshare presentation": data.get(
-                        "Link to Slideshare presentation (optional)"
-                    ),
-                },
+                "fields": dict(
+                    {
+                        "Title": data.get("Title"),
+                        "Link": data.get("Link"),
+                        "License": data.get("License"),
+                        "Description": data.get("Description"),
+                        "Institution": data.get("C_Institution"),
+                        "Location": "{}, {}".format(
+                            data.get("City"), data.get("Country")
+                        ),
+                    },
+                    **nominee_fields
+                ),
             },
         ]
+
+        if (
+            data.get("Proposed Citation")
+            or data.get("Background")
+            or data.get("Link to Youtube video (optional, but encouraged)")
+            or data.get("Letter of Support (required if self-nominating)")
+            or materials
+            or data.get("Link to Slideshare presentation (optional)")
+        ):
+            groups.append(
+                {
+                    "name": "Supporting materials",
+                    "fields": {
+                        "Proposed Citation": data.get("Proposed Citation"),
+                        "Background": data.get("Background"),
+                        "Youtube video": data.get(
+                            "Link to Youtube video (optional, but encouraged)"
+                        ),
+                        "Letter of Support": data.get(
+                            "Letter of Support (required if self-nominating)"
+                        ),
+                        "Additional Support Material": materials,
+                        "Slideshare presentation": data.get(
+                            "Link to Slideshare presentation (optional)"
+                        ),
+                    },
+                },
+            )
+
+        category = self.object.category
+        if self.request.user.is_staff or category.name not in [
+            "Open Assets Awards",
+            "Open Practices Awards",
+        ]:
+            nominator_ppi = {}
+            if self.request.user.is_staff:
+                nominator_ppi = {
+                    "Email": data.get("N_Email"),
+                    "Twitter": data.get("N_Twitter"),
+                }
+
+            groups.append(
+                {
+                    "name": "Nominator's Information",
+                    "fields": dict(
+                        {
+                            "Name": "{} {}".format(
+                                data.get("N_First"), data.get("N_Last")
+                            ),
+                            "Institution": data.get("N_Institution"),
+                        },
+                        **nominator_ppi
+                    ),
+                },
+            ),
 
         context["groups"] = groups
 
@@ -157,7 +205,10 @@ class EntryDetailView(DetailView):
             rating_instance = Rating.objects.get(
                 entry=self.object, user=self.request.user
             )
-            context["form"] = RatingForm(instance=rating_instance)
+            if self.object.category.name == "Individual Awards":
+                context["form"] = IndividualRatingForm(instance=rating_instance)
+            else:
+                context["form"] = RatingForm(instance=rating_instance)
         except Rating.DoesNotExist:
             pass
 
@@ -166,10 +217,15 @@ class EntryDetailView(DetailView):
 
 class EntryFormView(SingleObjectMixin, FormView):
     template_name = "web/entry_detail.html"
-    form_class = RatingForm
     model = Entry
     object = None
     rating_instance = None
+
+    def get_form_class(self):
+        if self.object.category.name == "Individual Awards":
+            return IndividualRatingForm
+
+        return RatingForm
 
     def post(self, request, *args, **kwargs):
         """
@@ -197,7 +253,6 @@ class EntryFormView(SingleObjectMixin, FormView):
                 "licensing",
                 "accessibility",
                 "currency",
-                "assessment",
             ]:
                 setattr(rating, field, None)
 
@@ -215,7 +270,9 @@ class EntryFormView(SingleObjectMixin, FormView):
         self.rating_instance = Rating.objects.get(
             entry=self.object, user=self.request.user
         )
-        return self.form_class(instance=self.rating_instance, **self.get_form_kwargs())
+        return self.get_form_class()(
+            instance=self.rating_instance, **self.get_form_kwargs()
+        )
 
     def get_success_url(self):
         if self.rating_instance.status == "draft":

@@ -43,7 +43,6 @@ class RatingForm(forms.ModelForm):
             "licensing",
             "accessibility",
             "currency",
-            "assessment",
             "comment",
         ]
         widgets = {
@@ -62,3 +61,21 @@ class RatingForm(forms.ModelForm):
         if data and (data.get("is_conflict") or data.get("is_draft")):
             for field in self.Meta.fields:
                 self.fields[field].required = False
+
+
+class IndividualRatingForm(RatingForm):
+    class Meta:
+        model = Rating
+        fields = [
+            "individual",
+            "comment",
+        ]
+        widgets = {
+            "comment": Textarea(attrs={"cols": 80, "rows": 4}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["comment"].required = True
+        self.fields["comment"].label = "Comment"

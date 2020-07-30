@@ -28,7 +28,11 @@
                                     {{ key }}
                                 </dt>
                                 <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 urlize">
-                                    {{ value|urlize }}
+                                    {% if key == 'Additional Support Material' %}
+                                        {{ value|safe }}
+                                    {% else %}
+                                        {{ value|urlize }}
+                                    {% endif %}
                                 </dd>
                             </div>
                         </dl>
@@ -43,6 +47,6 @@
     {% endif %}
 
     {% if form %}
-        {% include "_includes/rating-form.html" with form=form %}
+        {% include "_includes/rating-form.html" with form=form entry=object %}
     {% endif %}
 {% endblock %}

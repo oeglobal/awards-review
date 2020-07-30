@@ -94,7 +94,7 @@ class Rating(models.Model):
     access = models.IntegerField(
         null=True,
         verbose_name="Access",
-        help_text="Resources are easily accesible and readily available to anyone.",
+        help_text="Resources are easily accessible and readily available to anyone.",
     )
     quality = models.IntegerField(
         null=True,
@@ -114,12 +114,12 @@ class Rating(models.Model):
     inclusion = models.IntegerField(
         null=True,
         verbose_name="Inclusion",
-        help_text="Promotes inclusiveness and diversity through the use of variety of languages.",
+        help_text="Promotes inclusiveness and diversity through the use of a variety of languages and cultural contexts.",
     )
     licensing = models.IntegerField(
         null=True,
         verbose_name="Licensing",
-        help_text="Copyright and Fair Use guidelines are followed with proper use of citations.  An open license is clearly stated.",
+        help_text="Copyright and Fair Use guidelines are followed with proper use of citations. An open license is clearly stated.",
     )
     accessibility = models.IntegerField(
         null=True,
@@ -129,13 +129,9 @@ class Rating(models.Model):
     currency = models.IntegerField(
         null=True,
         verbose_name="Currency",
-        help_text="Information is current and updated.  Date of materiales is clearly indicated.",
+        help_text="Information is current and up to date. Date of materials is clearly indicated.",
     )
-    assessment = models.IntegerField(
-        null=True,
-        verbose_name="Assessment",
-        help_text="A form of certification or accreditation is available.",
-    )
+    individual = models.IntegerField(null=True, verbose_name="Individual Rating")
 
     comment = models.TextField(blank=True, verbose_name="Comment (optional)")
 

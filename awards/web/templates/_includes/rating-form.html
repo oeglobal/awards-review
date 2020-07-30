@@ -1,8 +1,61 @@
 <div class="bg-white shadow overflow-hidden  sm:rounded-lg mt-10">
     <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-        <h3 class="text-lg leading-6 font-medium text-gray-900 flex justify-between">
-            Your rating
-        </h3>
+        <div class="max-w-3xl">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 flex justify-between mb-4">
+                Your rating
+            </h3>
+
+            {% if entry.category.name == 'Individual Awards' %}
+                <p>Please consider the description of the award while reviewing the supporting materials of the
+                    nomination. Place your rating on a scale of 1 to 10, where 1=poor and 10=excellent. Use the 'comment
+                    box' below to explain briefly the reasoning behind your decision.
+                </p>
+            {% else %}
+                <p>Please review each of the following areas using a rating scale of 1 to 10, where 1=poor and
+                    10=excellent.
+                    Feel free to share any additional observations or remarks in the ‘comment box’ below.</p>
+            {% endif %}
+
+            {% if entry.subcategory == 'Leadership Award' %}
+                <h4 class="mt-6 font-bold mb-2">{{ entry.subcategory }}</h4>
+                <p>Award presented to an individual who has demonstrated significant leadership and longstanding
+                    involvement
+                    with Open Education. A person who has made significant and clear contributions to the furtherance of
+                    the
+                    Open Education movement, whose contributions to Open Education have spanned regions and/or had a
+                    global
+                    impact.</p>
+            {% elif entry.subcategory == 'Educator Award' %}
+                <h4 class="mt-6 font-bold mb-2">{{ entry.subcategory }}</h4>
+                <p class="italic">Award honoring an innovative teacher/professor who has published and/or used a
+                    significant body of OER over a sustained period (at least one year) in his/her teaching practice. An
+                    individual whose open course materials and professional practices have been recognized as having an
+                    impact and influencing peers to share more openly.</p>
+            {% elif entry.subcategory == 'Support Specialist Award' %}
+                <h4 class="mt-6 font-bold mb-2">{{ entry.subcategory }}</h4>
+                <p>Award presented to an individual actively engaged in the use and promotion of OER and Open Practices.
+                    Someone, other than a professor/teacher, that supports the ideals of the Open Education movement
+                    through
+                    their own practices. These might include librarians, researchers, instructional designers,
+                    policymakers,
+                    administrators or more.</p>
+            {% elif entry.subcategory == 'Emerging Leader Award' %}
+                <h4 class="mt-6 font-bold mb-2">{{ entry.subcategory }}</h4>
+                <p>Award granted to an enthusiastic individual displaying promising leadership qualities. Someone who’s
+                    advocacy and use of open education is inspiring, making them an effective spokesperson. Someone who
+                    has
+                    demonstrated a strong commitment towards its ideals or has achieved significant accomplishments.</p>
+            {% elif entry.subcategory == 'Student Award' %}
+                <h4 class="mt-6 font-bold mb-2">{{ entry.subcategory }}</h4>
+                <p>Award honoring the outstanding endeavors of a student who has advocated for or benefitted
+                    academically from
+                    the use of open educational resources (OER). The award is presented to the student whose
+                    achievements may
+                    inspire others to pursue degree programs that utilize open resources and/or someone who played a
+                    prominent
+                    role in advocating successfully for the promotion and advancement of OER and open education.</p>
+            {% endif %}
+        </div>
 
         <form class="js-rating rating__form" method="post" action=".">
             {% csrf_token %}
