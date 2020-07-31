@@ -1,9 +1,9 @@
-<ul class="mt-4 js-reviewers" id="reviewers">
+<ul class="mt-4 js-reviewers reviewers-list max-w-4xl" id="reviewers">
     {% for reviewer in reviewers %}
-        <li class="inline-block mr-4 w-80
+        <li class="inline-block mr-4 w-full py-1 pl-2
                            {% if reviewer.assigned %}font-bold cursor-pointer hover:text-blue-400
                            {% elif reviewer.readonly %}text-sm
-                           {% else %}underline cursor-pointer hover:text-blue-400{% endif %}
+                           {% else %}underline cursor-pointer hover:text-blue-400 hover:bg-gray-100{% endif %}
                           "
             data-user="{{ reviewer.user.id }}"
             data-entry="{{ entry.id }}"

@@ -59,3 +59,8 @@ nav a {
 .table__stats th {
   @apply px-4 py-2;
 }
+
+.reviewers-list {
+  column-count: 3;
+  column-gap: 2em;
+}
