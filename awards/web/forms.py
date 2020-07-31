@@ -74,8 +74,18 @@ class IndividualRatingForm(RatingForm):
             "comment": Textarea(attrs={"cols": 80, "rows": 4}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, data=None, instance=None, *args, **kwargs):
+        super().__init__(data, *args, instance=instance, **kwargs)
 
         self.fields["comment"].required = True
         self.fields["comment"].label = "Comment"
+
+        if instance and instance.status == "conflict":
+            self.fields["is_conflict"].initial = True
+
+        if instance and instance.status == "draft":
+            self.fields["is_draft"].initial = True
+
+        if data and (data.get("is_conflict") or data.get("is_draft")):
+            for field in self.Meta.fields:
+                self.fields[field].required = False

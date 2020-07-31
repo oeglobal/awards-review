@@ -61,6 +61,16 @@ const ratingForm = () => {
         $(this).prop("required", true);
       }
     });
+
+    console.log("boop");
+    if ($("#id_individual")) {
+      console.log("beep");
+      if (is_checked) {
+        $("#id_comment").removeAttr("required");
+      } else {
+        $("#id_comment").prop("required", true);
+      }
+    }
   });
 
   $(".js-reviewers li").each(function () {
