@@ -110,20 +110,22 @@ class EntryDetailView(DetailView):
 
         materials = []
         for material in data.get("Additional Support Material (optional)", []):
-            materials.append(
-                '<a href="{}" target="_blank">{}</a><br /><br />'.format(
-                    material, material.split("/")[-1]
+            if material:
+                materials.append(
+                    '<a href="{}" target="_blank">{}</a><br /><br />'.format(
+                        material, material.split("/")[-1]
+                    )
                 )
-            )
         materials = mark_safe("\n".join(materials))
 
         letters = []
         for letter in data.get("Letter of Support (required if self-nominating)", []):
-            letters.append(
-                '<a href="{}" target="_blank">{}</a><br /><br />'.format(
-                    letter, letter.split("/")[-1]
+            if letter:
+                letters.append(
+                    '<a href="{}" target="_blank">{}</a><br /><br />'.format(
+                        letter, letter.split("/")[-1]
+                    )
                 )
-            )
         letters = mark_safe("\n".join(letters))
 
         nominee_fields = {}
