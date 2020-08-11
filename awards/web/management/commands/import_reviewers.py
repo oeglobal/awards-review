@@ -13,7 +13,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        User.objects.filter(is_staff=False).delete()
+        # User.objects.filter(is_staff=False).delete()
 
         wb = xlrd.open_workbook(options.get("filename"))
         sheet = wb.sheet_by_index(0)
