@@ -70,9 +70,15 @@ class SubmissionsView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         context.update(
             {
-                "draft_entries": Rating.drafts.filter(user=user),
-                "done_entries": Rating.dones.filter(user=user),
-                "conflict_entries": Rating.conflicts.filter(user=user),
+                "draft_entries": Rating.drafts.filter(user=user).order_by(
+                    "entry__category", "entry__subcategory"
+                ),
+                "done_entries": Rating.dones.filter(user=user).order_by(
+                    "entry__category", "entry__subcategory"
+                ),
+                "conflict_entries": Rating.conflicts.filter(user=user).order_by(
+                    "entry__category", "entry__subcategory"
+                ),
             }
         )
 
@@ -302,7 +308,9 @@ class UserListView(StaffuserRequiredMixin, ListView):
     template_name = "web-staff/user_list.html"
 
     def get_queryset(self):
-        return self.model.objects.filter(is_active=True, is_superuser=False)
+        return self.model.objects.filter(is_active=True, is_superuser=False).order_by(
+            "first_name", "last_name"
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

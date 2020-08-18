@@ -1,0 +1,29 @@
+<ul>
+    <li class="border-t border-gray-200">
+        {% for obj in entries %}
+            {% ifchanged obj.entry.category %}
+                <li class="border-t border-gray-200 font-semibold text-gray-700">
+                    <div class="px-4 py-4 sm:px-6">
+                        {{ obj.entry.category }}
+                    </div>
+                </li>
+            {% endifchanged %}
+
+            {% if obj.entry.category.name == 'Individual Awards' %}
+                {% ifchanged obj.entry.subcategory %}
+                    <li class="border-t border-gray-200 italic text-gray-700">
+                        <div class="py-4 sm:px-6">
+                            {{ obj.entry.subcategory }}
+                        </div>
+                    </li>
+                {% endifchanged %}
+
+                {% include "_includes/card-excerpt.html" with obj=obj.entry staff=user.is_staff review=obj %}
+
+            {% else %}
+                {% include "_includes/card-excerpt.html" with obj=obj.entry staff=user.is_staff review=obj %}
+            {% endif %}
+
+        {% endfor %}
+    </li>
+</ul>
