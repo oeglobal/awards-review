@@ -6,8 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "PURGE=false parcel serve bundler/*.html --public-url '/static/' --log-level 4",
-    "build": "PURGE=true parcel build bundler/*.html --public-url '/static/'"
+    "start": "parcel serve bundler/*.html --public-url '/static/' --log-level 4",
+    "build": "parcel build bundler/*.html --public-url '/static/'"
   },
   "dependencies": {
     "@tailwindcss/ui": "^0.3.0",
@@ -16,7 +16,7 @@
     "postcss-import": "^12.0.1",
     "postcss-modules": "^3.2.0",
     "postcss-nested": "^4.2.2",
-    "tailwindcss": "^1.4.6"
+    "tailwindcss": "^1.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

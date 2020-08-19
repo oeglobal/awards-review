@@ -33,5 +33,8 @@ module.exports = {
     },
   },
   variants: {},
+  future: {
+    removeDeprecatedGapUtilities: true
+  },
   plugins: [require("@tailwindcss/ui"), require("@tailwindcss/custom-forms")],
 };
