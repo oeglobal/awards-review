@@ -1,13 +1,59 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load svg %}
 
 {% block headtitle %}Overview{% endblock %}
 
 {% block contents %}
-    <h2 class="text-bold text-xl mt-10">Overview</h2>
+    <div class="lg:w-2/3">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Overview
+        </h3>
+        <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <dl>
+                        <dt class="text-sm leading-5 font-medium text-gray-500 truncate">
+                            Completed reviews
+                        </dt>
+                        <dd class="mt-1 text-3xl leading-9 font-semibold text-gray-900">
+                            {{ dones }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <dl>
+                        <dt class="text-sm leading-5 font-medium text-gray-500 truncate">
+                            Waiting for review
+                        </dt>
+                        <dd class="mt-1 text-3xl leading-9 font-semibold text-gray-900">
+                            {{ drafts }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <dl>
+                        <dt class="text-sm leading-5 font-medium text-gray-500 truncate">
+                            Skipped reviews
+                        </dt>
+                        <dd class="mt-1 text-3xl leading-9 font-semibold text-gray-900">
+                            {{ conflicts }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="lg:w-2/3 mt-10">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Actions
+        </h3>
 
-    <h2 class="text-bold text-xl mt-10">Actions</h2>
-    <div class="my-4">
-        <a class="button primary" href="{% url 'staff-assignment' %}">Interactive assignment</a>
+        <div class="mt-5">
+            <a class="button primary" href="{% url 'staff-assignment' %}">Interactive assignment</a>
+        </div>
     </div>
 {% endblock %}
