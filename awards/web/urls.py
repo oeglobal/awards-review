@@ -11,6 +11,7 @@ from .views import (
     UserListView,
     EntryAssignUser,
     AssignmentView,
+    ExportReviews,
 )
 
 
@@ -33,5 +34,6 @@ urlpatterns = [
     ),
     path("staff/users/", UserListView.as_view(), name="staff-user-list"),
     path("staff/assignment/", AssignmentView.as_view(), name="staff-assignment"),
+    path("staff/export/", ExportReviews.as_view(), name="staff-export"),
     path("", IndexView.as_view(), name="index"),
 ]

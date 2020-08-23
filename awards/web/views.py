@@ -1,5 +1,6 @@
 import datetime
 
+import xlwt
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -153,8 +154,6 @@ class EntryDetailView(DetailView):
                 "Email": data.get("C_Email"),
                 "Twitter": data.get("C_Twitter"),
             }
-
-        from pprint import pprint
 
         groups = [
             {
@@ -382,3 +381,148 @@ class AssignmentView(StaffuserRequiredMixin, ListView):
         context["filtering"] = bool(self.cat)
 
         return context
+
+
+class ExportReviews(StaffuserRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type="application/ms-excel")
+        response["Content-Disposition"] = "attachment; filename=reviews.xls"
+        wb = xlwt.Workbook(encoding="utf-8")
+        ws = wb.add_sheet("Individual Awards", cell_overwrite_ok=True)
+
+        row_num = 0
+        columns = [
+            ("Subcategory", 120),
+            ("ID #", 20),
+            ("Name", 80),
+            ("Reviewer", 70),
+            ("Total", 20),
+            ("Comment", 450),
+        ]
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num][0], font_style)
+            ws.col(col_num).width = columns[col_num][1] * 100
+
+        font_style = xlwt.XFStyle()
+        font_style.alignment.wrap = 1
+
+        underline = xlwt.XFStyle()
+        underline.font.underline = True
+
+        for obj in Rating.objects.filter(
+            entry__category__name="Individual Awards", status="done",
+        ).order_by("entry__subcategory", "entry__id"):
+            row_num += 1
+
+            row = [
+                obj.entry.subcategory,
+                obj.entry.pk,
+                obj.entry.title,
+                "{} {}".format(obj.user.first_name, obj.user.last_name),
+                obj.individual,
+                obj.comment,
+            ]
+
+            for col_num in range(len(row)):
+                if isinstance(row[col_num], list):
+                    ws.write(row_num, col_num, row[col_num][0], row[col_num][1])
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+
+            ws.write(
+                row_num,
+                2,
+                xlwt.Formula(
+                    'HYPERLINK("{}";"{}")'.format(
+                        "https://review.awards.oeglobal.org/{}".format(
+                            obj.entry.get_absolute_url()
+                        ),
+                        obj.entry.title,
+                    )
+                ),
+                underline,
+            )
+
+        for category in [
+            "Open Assets Awards",
+            "Open Practices Awards",
+            "Special Awards",
+        ]:
+            ws = wb.add_sheet(category, cell_overwrite_ok=True)
+
+            row_num = 0
+            columns = [
+                ("Subcategory", 100),
+                ("ID #", 20),
+                ("Title", 140),
+                ("Reviewer", 70),
+                ("Access", 20),
+                ("Quality", 20),
+                ("Visual", 20),
+                ("Engagement", 35),
+                ("Inclusion", 30),
+                ("Licensing", 30),
+                ("Accessibility", 40),
+                ("Currency", 30),
+                ("Average Score", 60),
+                ("Comment", 450),
+            ]
+
+            font_style = xlwt.XFStyle()
+            font_style.font.bold = True
+
+            for col_num in range(len(columns)):
+                ws.write(row_num, col_num, columns[col_num][0], font_style)
+                ws.col(col_num).width = columns[col_num][1] * 100
+
+            font_style = xlwt.XFStyle()
+            font_style.alignment.wrap = 1
+
+            for obj in Rating.objects.filter(
+                entry__category__name=category, status="done",
+            ).order_by("entry__subcategory", "entry__id"):
+                row_num += 1
+
+                row = [
+                    obj.entry.subcategory,
+                    obj.entry.pk,
+                    obj.entry.title,
+                    "{} {}".format(obj.user.first_name, obj.user.last_name),
+                    obj.access,
+                    obj.quality,
+                    obj.visual,
+                    obj.engagement,
+                    obj.inclusion,
+                    obj.licensing,
+                    obj.accessibility,
+                    obj.currency,
+                    obj.average,
+                    obj.comment,
+                ]
+
+                for col_num in range(len(row)):
+                    if isinstance(row[col_num], list):
+                        ws.write(row_num, col_num, row[col_num][0], row[col_num][1])
+                    else:
+                        ws.write(row_num, col_num, row[col_num], font_style)
+
+                ws.write(
+                    row_num,
+                    2,
+                    xlwt.Formula(
+                        'HYPERLINK("{}";"{}")'.format(
+                            "https://review.awards.oeglobal.org/{}".format(
+                                obj.entry.get_absolute_url()
+                            ),
+                            obj.entry.title,
+                        )
+                    ),
+                    underline,
+                )
+
+        wb.save(response)
+        return response

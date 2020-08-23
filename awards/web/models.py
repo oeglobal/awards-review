@@ -1,3 +1,4 @@
+import statistics
 import uuid
 
 from django.core.mail import send_mail
@@ -5,7 +6,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 
 class Category(models.Model):
@@ -65,6 +66,9 @@ class Entry(models.Model):
 
     def get_entry_link(self):
         return self.data.get("Link")
+
+    def get_absolute_url(self):
+        return reverse("entry-detail", kwargs={"pk": self.pk})
 
 
 RATING_CHOICES = (
@@ -149,6 +153,25 @@ class Rating(models.Model):
 
     def __str__(self):
         return "Rating of #{} by {}".format(self.entry.entry_id, self.user.username)
+
+    @property
+    def average(self):
+        scores = []
+        for item in [
+            self.access,
+            self.quality,
+            self.visual,
+            self.engagement,
+            self.inclusion,
+            self.licensing,
+            self.accessibility,
+            self.currency,
+        ]:
+            if item:
+                scores.append(item)
+
+        if scores:
+            return round(statistics.mean(scores), 2)
 
 
 class LoginKey(models.Model):

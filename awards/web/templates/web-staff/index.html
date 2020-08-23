@@ -47,13 +47,14 @@
         </div>
     </div>
 
-    <div class="lg:w-2/3 mt-10">
+    <div class="lg:w-1/3 mt-10">
         <h3 class="text-lg leading-6 font-medium text-gray-900">
             Actions
         </h3>
 
-        <div class="mt-5">
+        <div class="flex justify-between mt-5">
             <a class="button primary" href="{% url 'staff-assignment' %}">Interactive assignment</a>
+            <a class="button secondary" href="{% url 'staff-export' %}">Export Reviews</a>
         </div>
     </div>
 {% endblock %}
