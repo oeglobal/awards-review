@@ -1,5 +1,3 @@
-from django.conf.urls import url
-from django.views.generic import TemplateView
 from django.urls import path
 from .views import (
     LoginKeyCheckView,
