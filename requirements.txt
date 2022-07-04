@@ -1,4 +1,4 @@
-Django==3.0.8
+Django==3.1.14
 psycopg2-binary==2.8.5
 git+https://github.com/gandalfar/django-inline-svg.git@master#egg=django-inline-svg
 requests==2.24.0
