@@ -8,7 +8,7 @@ pytz==2020.1
 requests==2.24.0
 sentry-sdk==0.15.1
 sqlparse==0.3.1
-urllib3==1.25.9
+urllib3==1.26.5
 git+https://github.com/gandalfar/django-inline-svg.git@master#egg=django-inline-svg
 wheel
 xlrd==1.2.0
